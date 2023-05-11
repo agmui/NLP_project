@@ -9,5 +9,4 @@ import pandas
 # reading the CSV file
 csvFile = pandas.read_csv('./Project_CodeNet/metadata/p00000.csv')
 # displaying the contents of the CSV file
-# print(csvFile["problem_id"])
-print(csvFile["submission_id"])
+print(csvFile["problem_id"], csvFile["submission_id"])
