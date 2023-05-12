@@ -78,22 +78,34 @@ if __name__ == "__main__":
     problem_data=problem_data.set_index('submission_id')
     problem_data=problem_data.join(code_df, on='submission_id')
 
+    # split data
+    train_data, test_data = [], []
 
+    for _, group_data in problem_data.groupby("submission_id"):
+        # Select around 50% of the dataset for training.
+        random_selection = np.random.rand(len(group_data.index)) <= 0.5
+        train_data.append(group_data[random_selection])
+        test_data.append(group_data[~random_selection])
 
-                # feature_names = {"code"}
-    # x_train =
+    train_data = pd.concat(train_data).sample(frac=1)
+    test_data = pd.concat(test_data).sample(frac=1)
 
-    # model = GNNNodeClassifier(get_graph_info(), 2, hidden_units)
-    # run_experiment(model, x_train, y_train)
-    # feature_names = set(papers.columns) - {"paper_id", "subject"}
+    print("Train data shape:", train_data.shape)
+    print("Test data shape:", test_data.shape)
+    # =====
+
+    # Create train and test features as a numpy array.
+    x_train = train_data["problem_id"].to_numpy()
+    x_test = test_data["problem_id"].to_numpy()
+    # Create train and test targets as a numpy array.
+    y_train = train_data["status"]
+    y_test = test_data["status"]
+
+    model = GNNNodeClassifier(get_graph_info(), 2, hidden_units)
+    run_experiment(model, x_train, y_train)
+    # feature_names = set(problem_data.columns) - {"paper_id", "subject"}
     # num_features = len(feature_names)
     # num_classes = len(class_idx)
-    #
-    # # Create train and test features as a numpy array.
-    # x_train = train_data["problem_id"].to_numpy()
-    # x_test = test_data["problem_id"].to_numpy()
-    # # Create train and test targets as a numpy array.
-    # y_train = train_data["status"]
-    # y_test = test_data["status"]
+
 
     pass
